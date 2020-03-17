@@ -36,3 +36,88 @@
     transform: rotate(360deg);
   }
 }
+
+#myContainer{
+  width: 100%;
+  max-width: 1500px;
+  margin: auto;
+
+}
+
+#cal-grid{
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+
+}
+
+.cal-card{
+  width: 14%;
+  /* margin: 5px; */
+}
+.date{
+  font-size: 60px;
+}
+#buttons{
+  width: 90%;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.btn-circle {
+  border-radius: 400px;
+}
+
+#year{
+  font-size: 50px;
+}
+#month{
+  font-size: 70px;
+}
+
+
+@media (max-width: 576px) { 
+
+  .cal-card{
+      width: 90%;
+  }
+
+}
+
+@media (min-width: 576px) { 
+
+  .cal-card{
+      width: 30%;
+  }
+
+}
+
+/* // Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+
+  .cal-card{
+      width: 25%;
+  }
+
+}
+
+/* // Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+
+  .cal-card{
+      width: 20%;
+  }
+
+}
+
+/* // Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+
+  .cal-card{
+      width: 14%;
+  }
+  
+}

@@ -1,8 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Button } from 'react-bootstrap'
+import EventAddModal from './modals/event-add-modal'
+import AllEventsModal from './modals/show-date-events-modal'
 
 
 class App extends React.Component {
@@ -15,7 +16,9 @@ class App extends React.Component {
       current_month: new Date().getMonth(),
       current_year: new Date().getFullYear(),
       month_name: this.getMonthName(new Date().getMonth()),
-      active_year: new Date().getFullYear()
+      active_year: new Date().getFullYear(),
+      event_add_modal_display:false,
+      all_events_modal_display:false
 
 
     }
@@ -23,19 +26,19 @@ class App extends React.Component {
 
   getMonthName = (month) => {
 
-    if(month<0){
-      while(true){
-        month+=12
-        if(month>0){
+    if (month < 0) {
+      while (true) {
+        month += 12
+        if (month > 0) {
           break
         }
       }
     }
 
-    if(month>=12){
-      while(true){
-        month-=12
-        if(month<12){
+    if (month >= 12) {
+      while (true) {
+        month -= 12
+        if (month < 12) {
           break
         }
       }
@@ -65,6 +68,8 @@ class App extends React.Component {
         return "November"
       case 11:
         return "December"
+      default:
+        return null
 
     }
   }
@@ -85,6 +90,8 @@ class App extends React.Component {
         return "Friday"
       case 6:
         return "Saturday"
+      default:
+        return null
     }
   }
 
@@ -92,15 +99,12 @@ class App extends React.Component {
 
 
   getDays = () => {
-    console.log(this.state.current_month)
 
 
     let worker = new Date(this.state.current_year, this.state.current_month + 1, 0)
     let number_of_days = worker.getDate()
     let days = []
-    // console.log(this.current_year)
-    // console.log(this.current_month)
-    console.log(number_of_days)
+    
 
     for (let day = 1; day <= number_of_days; day++) {
       let date = new Date(this.state.current_year, this.state.current_month, day)
@@ -109,36 +113,89 @@ class App extends React.Component {
       let day_name = this.getDayName(date.getDay())
       days.push({ day_string, day_name })
     }
-    console.log(days)
+    return days
   }
 
   next = () => {
 
 
     this.setState({ current_month: this.state.current_month + 1 })
-    this.setState({ month_name: this.getMonthName(this.state.current_month+1) })
-    this.setState({active_year: new Date(this.state.current_year, this.state.current_month+1,1).getFullYear()})
-    
-    
+    this.setState({ month_name: this.getMonthName(this.state.current_month + 1) })
+    this.setState({ active_year: new Date(this.state.current_year, this.state.current_month + 1, 1).getFullYear() })
+
+
   }
 
   prev = () => {
     this.setState({ current_month: this.state.current_month - 1 })
-    this.setState({ month_name: this.getMonthName(this.state.current_month-1) })
-    this.setState({active_year: new Date(this.state.current_year, this.state.current_month-1,1).getFullYear()})
+    this.setState({ month_name: this.getMonthName(this.state.current_month - 1) })
+    this.setState({ active_year: new Date(this.state.current_year, this.state.current_month - 1, 1).getFullYear() })
 
 
   }
+  
+
+
 
   render() {
     this.getDays()
-    // console.log(this.state)
+    const makeGrid = this.getDays().map((data, index) => {
+
+      const event_add_modal_show = () =>{
+        this.setState({event_add_modal_display:true})
+        
+      }
+
+      const event_add_modal_close = () =>{
+        this.setState({event_add_modal_display:false})
+        
+      }
+
+      const all_events_modal_close = () =>{
+        this.setState({all_events_modal_display:false})
+      }
+
+      return (
+        <div className="cal-card" key={index}>
+          <Card >
+
+            <Card.Body>
+              <Card.Title><strong>{data.day_name}</strong></Card.Title>
+              <Card.Text >
+                
+                  <strong className="date">{data.day_string.split('-')[2]}</strong>
+                  <br></br>                
+                <button variant="dark" onClick={event_add_modal_show} className="btn btn-dark btn-circle" style={{borderRadius:"30px"}}><strong>+</strong></button>
+              </Card.Text>
+
+            </Card.Body>
+            <Button variant="dark" onClick={()=>{this.setState({all_events_modal_display:true})}} >Scheduled Events</Button>
+          </Card>
+          <EventAddModal  display={this.state.event_add_modal_display} close={event_add_modal_close} date={data.day_string}/>
+          <AllEventsModal display={this.state.all_events_modal_display} close={all_events_modal_close}  date={data.day_string}/>
+        </div>
+
+      )
+
+
+    })
+
+
     return (
-      <div>
-        <h1>{this.state.active_year}</h1>
-        <h1>{this.state.month_name}</h1>
-        <button onClick={this.prev} >Previous</button>
-        <button onClick={this.next} >Next</button>
+      <div id="myContainer">
+        <h1 id="year">{this.state.active_year}</h1>
+        <h1 id="month"><strong>{this.state.month_name}</strong></h1>
+        <div id="buttons">
+          <Button variant="dark" onClick={this.prev} >Prev</Button>
+          <Button variant="dark" onClick={this.next} >Next</Button>
+        </div>
+        <br></br>
+        <br></br>
+        <div id="cal-grid">
+          {makeGrid}
+        </div>
+
+        
       </div>
     )
   }
