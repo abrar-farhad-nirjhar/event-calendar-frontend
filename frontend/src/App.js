@@ -152,9 +152,10 @@ class App extends React.Component {
   add_event=(data)=>{
 
 
-    console.log(data)
+    
+    data.date = this.state.date
 
-    console.log(this.state.date)
+    console.log(data)
 
   }
 

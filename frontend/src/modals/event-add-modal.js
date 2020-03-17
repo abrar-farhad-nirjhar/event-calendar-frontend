@@ -10,11 +10,10 @@ const EventAddModal = (props) => {
     
     const handleClose = () => {
         let data = {
-            user_name,
+            username:user_name,
             event_name,
             event_description,
         }
-        console.log(props)
         
         props.add(data)
         
@@ -40,11 +39,9 @@ const EventAddModal = (props) => {
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-            </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
+                    
+                    <Button variant="dark" onClick={handleClose}>
+                        Add Event
             </Button>
                 </Modal.Footer>
             </Modal>
