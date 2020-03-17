@@ -18,7 +18,9 @@ class App extends React.Component {
       month_name: this.getMonthName(new Date().getMonth()),
       active_year: new Date().getFullYear(),
       event_add_modal_display:false,
-      all_events_modal_display:false
+      all_events_modal_display:false,
+      date:"",
+      date_event:""
 
 
     }
@@ -135,25 +137,34 @@ class App extends React.Component {
   }
   
 
+  
 
+  event_add_modal_close = () =>{
+    this.setState({event_add_modal_display:false})
+    
+  }
+
+
+  all_events_modal_close = () =>{
+    this.setState({all_events_modal_display:false})
+  }
+
+  add_event=(data)=>{
+
+
+    console.log(data)
+
+    console.log(this.state.date)
+
+  }
 
   render() {
     this.getDays()
     const makeGrid = this.getDays().map((data, index) => {
 
-      const event_add_modal_show = () =>{
-        this.setState({event_add_modal_display:true})
-        
-      }
+      
 
-      const event_add_modal_close = () =>{
-        this.setState({event_add_modal_display:false})
-        
-      }
-
-      const all_events_modal_close = () =>{
-        this.setState({all_events_modal_display:false})
-      }
+      
 
       return (
         <div className="cal-card" key={index}>
@@ -165,15 +176,21 @@ class App extends React.Component {
                 
                   <strong className="date">{data.day_string.split('-')[2]}</strong>
                   <br></br>                
-                <button variant="dark" onClick={event_add_modal_show} className="btn btn-dark btn-circle" style={{borderRadius:"30px"}}><strong>+</strong></button>
+                <button variant="dark" onClick={()=>{
+                          this.setState({event_add_modal_display:true})
+                          this.setState({date:data.day_string})
+                          
+
+                }} className="btn btn-dark btn-circle" style={{borderRadius:"30px"}}><strong>+</strong></button>
               </Card.Text>
 
             </Card.Body>
-            <Button variant="dark" onClick={()=>{this.setState({all_events_modal_display:true})}} >Scheduled Events</Button>
+            <Button variant="dark" onClick={()=>{
+              this.setState({all_events_modal_display:true})
+              this.setState({date_event:data.day_string})
+            }} >Scheduled Events</Button>
           </Card>
-          <EventAddModal  display={this.state.event_add_modal_display} close={event_add_modal_close} date={data.day_string}/>
-          <AllEventsModal display={this.state.all_events_modal_display} close={all_events_modal_close}  date={data.day_string}/>
-        </div>
+          </div>
 
       )
 
@@ -194,6 +211,10 @@ class App extends React.Component {
         <div id="cal-grid">
           {makeGrid}
         </div>
+
+        <EventAddModal  display={this.state.event_add_modal_display} close={this.event_add_modal_close} add={this.add_event}/>
+        <AllEventsModal display={this.state.all_events_modal_display} close={this.all_events_modal_close}  />
+        
 
         
       </div>

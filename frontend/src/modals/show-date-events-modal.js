@@ -4,7 +4,7 @@ import { Button, Modal } from 'react-bootstrap'
 
 const AllEventsModal=(props)=>{
     let show = props.display
-    console.log(props)
+    
     const handleClose = () => {
 
         props.close()
