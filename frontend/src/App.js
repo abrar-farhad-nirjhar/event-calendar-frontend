@@ -197,6 +197,11 @@ class App extends React.Component {
     this.socket.send(JSON.stringify(data))
   }
 
+  edit_event = (data) =>{
+    data.day = this.state.date_event
+    this.socket.send(JSON.stringify(data))
+  }
+
   render() {
     this.getDays()
     const makeGrid = this.getDays().map((data, index) => {
@@ -259,7 +264,8 @@ class App extends React.Component {
         </div>
 
         <EventAddModal  display={this.state.event_add_modal_display} close={this.event_add_modal_close} add={this.add_event} />
-        <AllEventsModal  display={this.state.all_events_modal_display} close={this.all_events_modal_close} events={this.state.day_events} delete={this.delete_event} />
+        
+        <AllEventsModal  display={this.state.all_events_modal_display} close={this.all_events_modal_close} events={this.state.day_events} delete={this.delete_event} edit={this.edit_event} />
 
 
 

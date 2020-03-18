@@ -82,13 +82,24 @@
   width: 80%;
 }
 
-.myModal th{
-  font-size: 10px;
-  text-align: center;
-}
+
 .cTable{
   margin: auto;
 }
+
+.cTable th{
+  font-size: 10px;
+  text-align: center;
+}
+
+/* .cTable td{
+  overflow-y: auto;
+} */
+.width-set{
+  min-width: 70%;
+}
+
+
 
 @media (max-width: 576px) { 
 
