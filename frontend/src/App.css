@@ -78,6 +78,17 @@
   font-size: 70px;
 }
 
+#mbody{
+  width: 80%;
+}
+
+.myModal th{
+  font-size: 10px;
+  text-align: center;
+}
+.cTable{
+  margin: auto;
+}
 
 @media (max-width: 576px) { 
 

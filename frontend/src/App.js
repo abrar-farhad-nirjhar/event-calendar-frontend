@@ -17,14 +17,43 @@ class App extends React.Component {
       current_year: new Date().getFullYear(),
       month_name: this.getMonthName(new Date().getMonth()),
       active_year: new Date().getFullYear(),
-      event_add_modal_display:false,
-      all_events_modal_display:false,
-      date:"",
-      date_event:""
+      event_add_modal_display: false,
+      all_events_modal_display: false,
+      date: "",
+      date_event: "", 
+      events: null,
+      day_events:null
 
 
     }
+    this.endpoint = 'ws://127.0.0.1:8000/eventConsumer/'
+    this.socket = new WebSocket(this.endpoint)
+    this.socket.onmessage = (e) => {
+      let data = JSON.parse(e.data)
+      this.setState({events:data})
+      
+      if(this.state.date_event){
+        this.setState({day_events:this.state.events.filter(event=>event.day.replace(/\b0/g, '')===this.state.date_event)})
+        
+      }
+    }
+    this.socket.onopen = function (e) {
+
+      console.log("message", e)
+
+    }
+
+
+    this.socket.onerror = function (e) {
+      console.log("message", e)
+    }
+    this.socket.onclose = function (e) {
+      console.log("message", e)
+    }
   }
+
+ 
+
 
   getMonthName = (month) => {
 
@@ -106,7 +135,7 @@ class App extends React.Component {
     let worker = new Date(this.state.current_year, this.state.current_month + 1, 0)
     let number_of_days = worker.getDate()
     let days = []
-    
+
 
     for (let day = 1; day <= number_of_days; day++) {
       let date = new Date(this.state.current_year, this.state.current_month, day)
@@ -135,37 +164,52 @@ class App extends React.Component {
 
 
   }
-  
 
-  
 
-  event_add_modal_close = () =>{
-    this.setState({event_add_modal_display:false})
-    
+
+
+  event_add_modal_close = () => {
+    this.setState({ event_add_modal_display: false })
+
   }
 
 
-  all_events_modal_close = () =>{
-    this.setState({all_events_modal_display:false})
+  all_events_modal_close = () => {
+    this.setState({ all_events_modal_display: false })
   }
 
-  add_event=(data)=>{
+  add_event = (data) => {
+
+
+
+    data.day = this.state.date
+
+    this.socket.send(JSON.stringify(data))
+
 
 
     
-    data.date = this.state.date
 
-    console.log(data)
+  }
 
+  delete_event = (data) =>{
+    data.action = true
+    this.socket.send(JSON.stringify(data))
   }
 
   render() {
     this.getDays()
     const makeGrid = this.getDays().map((data, index) => {
+      let events = null;
+      if(this.state.events){
+       events = this.state.events.filter(event=>event.day.replace(/\b0/g, '')===data.day_string)
+      }
 
-      
+    
 
-      
+
+
+
 
       return (
         <div className="cal-card" key={index}>
@@ -174,24 +218,25 @@ class App extends React.Component {
             <Card.Body>
               <Card.Title><strong>{data.day_name}</strong></Card.Title>
               <Card.Text >
-                
-                  <strong className="date">{data.day_string.split('-')[2]}</strong>
-                  <br></br>                
-                <button variant="dark" onClick={()=>{
-                          this.setState({event_add_modal_display:true})
-                          this.setState({date:data.day_string})
-                          
 
-                }} className="btn btn-dark btn-circle" style={{borderRadius:"30px"}}><strong>+</strong></button>
+                <strong className="date">{data.day_string.split('-')[2]}</strong>
+                <br></br>
+                <button variant="dark" onClick={() => {
+                  this.setState({ event_add_modal_display: true })
+                  this.setState({ date: data.day_string })
+
+
+                }} className="btn btn-dark btn-circle" style={{ borderRadius: "30px" }}><strong>+</strong></button>
               </Card.Text>
 
             </Card.Body>
-            <Button variant="dark" onClick={()=>{
-              this.setState({all_events_modal_display:true})
-              this.setState({date_event:data.day_string})
+            <Button variant="dark" onClick={() => {
+              this.setState({ all_events_modal_display: true })
+              this.setState({ date_event: data.day_string })
+              this.setState({day_events:events})
             }} >Scheduled Events</Button>
           </Card>
-          </div>
+        </div>
 
       )
 
@@ -213,11 +258,11 @@ class App extends React.Component {
           {makeGrid}
         </div>
 
-        <EventAddModal  display={this.state.event_add_modal_display} close={this.event_add_modal_close} add={this.add_event}/>
-        <AllEventsModal display={this.state.all_events_modal_display} close={this.all_events_modal_close}  />
-        
+        <EventAddModal  display={this.state.event_add_modal_display} close={this.event_add_modal_close} add={this.add_event} />
+        <AllEventsModal  display={this.state.all_events_modal_display} close={this.all_events_modal_close} events={this.state.day_events} delete={this.delete_event} />
 
-        
+
+
       </div>
     )
   }
