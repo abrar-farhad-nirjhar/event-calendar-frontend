@@ -1,8 +1,8 @@
 # event-calendar-frontend
 Event Calendar Frontend
 
+# Steps to run locally:
 
-Steps to run locally:
 (Nosde js must be installed)
 1. clone the repository
 2. within the directory there is a frontend directory
